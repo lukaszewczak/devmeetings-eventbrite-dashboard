@@ -5,5 +5,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const server = require('./server.js');
+const eventbrite = require('./eventbrite.js');
 
-module.exports = Object.assign({}, server);
+module.exports = Object.assign({}, server, eventbrite);
