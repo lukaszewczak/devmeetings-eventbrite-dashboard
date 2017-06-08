@@ -7,7 +7,7 @@ const envVarSChema = joi.object({
 
 const {error, value: envVars} = joi.validate(process.env, envVarSChema);
 if (error) {
-    throw new Error(`Config validation error: ${envVars}`);
+    throw new Error(`Config validation error: ${error}`);
 }
 
 const config = {
