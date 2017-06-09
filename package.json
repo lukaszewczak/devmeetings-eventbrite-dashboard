@@ -12,7 +12,7 @@
   },
   "nyc": {
     "include": [
-      "routes/**/*.ts"
+      "routes/**/*.js"
     ],
     "exclude": [
       "node_modules/"
