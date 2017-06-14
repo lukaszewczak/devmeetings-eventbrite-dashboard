@@ -5,7 +5,7 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const config = require('./config');
+const config = require('./server/config/index');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -16,38 +16,44 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-app.use(require('./routes'));
+app.use(express.static(path.join(__dirname, 'dist')));
+
+app.use(require('./server/routes/index'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // development error handler
 if (!isProduction) {
-    app.use(function (err, req, res, next) {
-        console.log(err.stack);
+  app.use(function (err, req, res, next) {
+    console.log(err.stack);
 
-        res.status(err.status || 500);
-        res.json({
-            'errors': {
-                message: err.message,
-                error: err
-            }
-        });
+    res.status(err.status || 500);
+    res.json({
+      'errors': {
+        message: err.message,
+        error: err
+      }
     });
+  });
 }
 
 app.use(function (err, req, res) {
-    res.status(err.status || 500);
-    res.json({
-        'errors': {
-            message: err.message,
-            error: err
-        }
-    });
+  res.status(err.status || 500);
+  res.json({
+    'errors': {
+      message: err.message,
+      error: err
+    }
+  });
 });
 
 app.listen(config.server.port, () => console.log(`Server started on port: ${config.server.port}`));

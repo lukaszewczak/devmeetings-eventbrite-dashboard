@@ -3,7 +3,7 @@
 const router = require('express').Router();
 const moment = require('moment');
 const util = require('util');
-const config = require('../../../config');
+const config = require('../../../config/index');
 
 const request = util.promisify(require('request'));
 

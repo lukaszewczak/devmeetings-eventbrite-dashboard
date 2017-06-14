@@ -1,3 +1,3 @@
 'use strict';
 
-const eventsRoutes = require('../../../routes/api/events');
+const eventsRoutes = require('../../../server/routes/api/events');
