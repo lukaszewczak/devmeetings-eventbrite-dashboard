@@ -4,6 +4,7 @@ import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
 import {EventsComponent} from './events/events.component';
+import {EventsService} from './events.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import {EventsComponent} from './events/events.component';
     BrowserModule,
     HttpModule
   ],
-  providers: [],
+  providers: [EventsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

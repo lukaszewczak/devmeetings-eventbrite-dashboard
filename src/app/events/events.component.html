@@ -1,3 +1,36 @@
-<p>
-  events works!
-</p>
+<div class="container">
+  <div>
+    <div class="card-panel cyan lighten-3" *ngFor="let event of events | async">
+      <div class="row">
+        <div class="col s7 left-align"><h5><a target="_blank" href="{{event.url}}">{{event.name}}</a></h5></div>
+        <div class="col s5 left-align">
+          Liczba dni do eventu: <h5>{{event.daysLeft}}</h5>
+          Data startu: <h5>{{event.start}}</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s2">
+          Liczba biletów: <h4>{{event.quantity_total}}</h4>
+        </div>
+        <div class="col s3">
+          Liczba sprzedanych biletów: <h4>{{event.quantity_sold}}</h4>
+        </div>
+        <div class="col s3">
+          Liczba dni na sprzedaż: <h4>{{event.salesDays}}</h4>
+        </div>
+        <div class="col s4">
+          Liczba dni do końca sprzedaży: <h4>{{event.salesDaysLeft}}</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <h6>Liczba rejestracji per dzień</h6>
+          <span *ngFor="let history of event.salesHistory">
+            <strong>{{history.date}}</strong>:
+            <strong>{{history.attendees}}</strong> |
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

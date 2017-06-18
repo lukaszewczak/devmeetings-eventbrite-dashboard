@@ -72,15 +72,15 @@ function prepareResponse (response) {
         name: response.name.text,
         id: response.id,
         url: response.url,
-        start: response.start.local,
-        end: response.end.local,
+        start: moment(response.start.local).format('YYYY-MM-DD HH:mm'),
+        end: moment(response.end.local).format('YYYY-MM-DD HH:mm'),
         daysLeft: moment(response.start.local).diff(moment(), 'days'),
         daysFromSalesStart: moment(response.start.local)
             .diff(moment(response.ticket_classes[0].sales_start), 'days'),
         quantity_total: response.ticket_classes[0].quantity_total,
         quantity_sold: response.ticket_classes[0].quantity_sold,
-        sales_start: response.ticket_classes[0].sales_start,
-        sales_end: response.ticket_classes[0].sales_end,
+        sales_start: moment(response.ticket_classes[0].sales_start).format('YYYY-MM-DD HH:mm'),
+        sales_end: moment(response.ticket_classes[0].sales_end).format('YYYY-MM-DD HH:mm'),
         salesDays: moment(response.ticket_classes[0].sales_end)
             .diff(moment(response.ticket_classes[0].sales_start), 'days'),
         salesDaysLeft: moment(response.ticket_classes[0].sales_end)
