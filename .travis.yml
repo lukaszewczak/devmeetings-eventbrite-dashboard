@@ -1,6 +1,10 @@
 language: node_js
 node_js:
-      - "8"
+- '8'
 script:
-      - npm test
+- npm test
 after_success: npm run coverage
+deploy:
+  provider: heroku
+  api_key:
+    secure: QTrzZIamPVwVgGveXQIqnC4S04pIiDYHCpW6Yl52B+67XA5LvP4rYbjmUhsdNvIAf4nP+MrxwHVlwruvDJGs4utTIjjakTme8t2J1J1gmtiaFAYHj8kSNN9T3nNBTw37jzkAyzB2Brnsr5eNEnKyceJxl3xyik1QkzULgA6HfdAQpX+PsGOlV7NqFinIC5e162fYSJYgC78LAAAFD9uGLP7jF9ZCqRJG+c9QyCHWmUaBUYqWIzpse6wFosXPiwR3+WSfPt6ey6/cl+X5AErBVqx9gFijAqzZ7Yet2RXPRpBJ02by4AdIoTv4Mhwk8aNhe3dWJx+jcSYJshDqLUKv/ol8GM49ZBvfzHTuE0WJfDFOKu6utSLE+6J7BxdgQbHr+PIJ+ruH+ls+xz3g/YkxwIqcq7GZ569nhf3WX1h19L61AA+w20FfB4K+QSS4OQ/9Hcx5SI4L6TwOqMDN2rOI765/osjiA5x5Ywca+y059o7e/k5e5yHcHYX/n+8j+Fn8rgZq6o2ETtTWVQHVxttA2FCfdwEIdZYTqNIjsEmqTprNyKCL4WsDbHNPjF+JGF5PsiQGXQgqSkUAyxoozCuXGvN0i4JdxmJExR9UvQEHBiIB/5Ssnakg9ZmMJnXvr9jIBilLeB+0PUqw7teGTmMoqKjROl2lq/2gS+KtBEeH7Hc=
