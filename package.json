@@ -10,7 +10,7 @@
     "test:ng": "ng test",
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
-    "start": "ng build && node app.js",
+    "start": "ng build --aot -prod && node app.js",
     "debug": "node %NODE_DEBUG_OPTION% app.js",
     "start:dev": "ng build && set NODE_ENV=development&& nodemon app.js",
     "test": "nyc mocha test/**/*.spec.js --reporter spec",
