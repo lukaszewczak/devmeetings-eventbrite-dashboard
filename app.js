@@ -5,22 +5,44 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const config = require('./server/config/index');
+const passport = require('passport');
+const session = require('express-session');
+const config = require('./server/config');
+const routes = require('./server/routes');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const app = express();
+const sess = {
+  secret: config.server.cookieSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {}
+};
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+if (isProduction) {
+  app.set('trust proxy', 1);
+  sess.cookie.secure = true;
+}
+app.use(session(sess));
 
-app.use(express.static(path.join(__dirname, 'dist')));
+config.passport(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use(require('./server/routes/index'));
+app.get(/^.*(js|map)$/,express.static(path.join(__dirname, 'dist')));
 
-app.get('*', (req, res) => {
+app.use(routes);
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'login.html'));
+});
+
+app.get('/', routes.isLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
