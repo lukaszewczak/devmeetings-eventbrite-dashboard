@@ -10,7 +10,7 @@ const request = util.promisify(require('request'));
 router.get('/', (req, res) => {
 
   const options = {
-    url: 'https://www.eventbriteapi.com/v3/users/me/owned_events/?status=live,started',
+    url: 'https://www.eventbriteapi.com/v3/users/me/owned_events?status=live,started,ended',
     headers: {
       'Authorization': `Bearer  ${config.eventbrite.token}`
     }
@@ -67,7 +67,6 @@ async function getEventTicketClassAndAttendess (event) {
       event.attendees = event.attendees.concat(body.attendees);
       allData = !body.pagination.has_more_items;
       page += 1;
-      console.log(`allData = ${allData}`);
     }
 
   }
@@ -79,6 +78,34 @@ async function getEventTicketClassAndAttendess (event) {
 }
 
 function prepareResponse (response) {
+  let sales_start, sales_end, quantity_total = 0, quantity_sold = 0, ticket_classes = [];
+
+  for (let ticket_class of response.ticket_classes) {
+    ticket_classes.push({
+      name: ticket_class.name,
+      quantity_total: ticket_class.quantity_total,
+      quantity_sold: ticket_class.quantity_sold
+    });
+
+    quantity_total = quantity_total + ticket_class.quantity_total;
+    quantity_sold = quantity_sold + ticket_class.quantity_sold;
+
+    if (!sales_start || sales_start.isAfter(moment(ticket_class.sales_start))) {
+      if (moment(response.created).isBefore(ticket_class.sales_start)) {
+        sales_start = moment(ticket_class.sales_start);
+      }
+    }
+    if (!sales_end ||
+      (sales_end.isAfter(moment(ticket_class.sales_end)) &&
+      moment(ticket_class.sales_end).isBefore(moment(response.start.local)))) {
+      sales_end = moment(ticket_class.sales_end);
+    }
+  }
+
+  if (!sales_start) {
+    sales_start = moment(response.created);
+  }
+
   const result = {
     name: response.name.text,
     id: response.id,
@@ -87,17 +114,15 @@ function prepareResponse (response) {
     end: moment(response.end.local).format('YYYY-MM-DD HH:mm'),
     daysLeft: moment(response.start.local).diff(moment(), 'days'),
     daysFromSalesStart: moment(response.start.local)
-      .diff(moment(response.ticket_classes[0].sales_start), 'days'),
-    quantity_total: response.ticket_classes[0].quantity_total,
-    quantity_sold: response.ticket_classes[0].quantity_sold,
-    sales_start: moment(response.ticket_classes[0].sales_start).format('YYYY-MM-DD HH:mm'),
-    sales_end: moment(response.ticket_classes[0].sales_end).format('YYYY-MM-DD HH:mm'),
-    salesDays: moment(response.ticket_classes[0].sales_end)
-      .diff(moment(response.ticket_classes[0].sales_start), 'days'),
-    salesDaysLeft: moment(response.ticket_classes[0].sales_end)
-      .diff(moment(), 'days'),
-    salesHistory: generateSalesHistory(response.ticket_classes[0].sales_start,
-      response.ticket_classes[0].sales_end, response.attendees)
+      .diff(sales_start, 'days'),
+    quantity_total: quantity_total,
+    quantity_sold: quantity_sold,
+    tickets: ticket_classes,
+    sales_start: sales_start.format('YYYY-MM-DD HH:mm'),
+    sales_end: sales_end.format('YYYY-MM-DD HH:mm'),
+    salesDays: sales_end.diff(sales_start, 'days'),
+    salesDaysLeft: sales_end.diff(moment(), 'days'),
+    salesHistory: generateSalesHistory(sales_start, sales_end, response.attendees)
   };
 
   result.salesDays = result.salesDays < 0 ? 0 : result.salesDays;
@@ -110,27 +135,39 @@ function prepareResponse (response) {
 
 function generateSalesHistory (start, end, attendees) {
   const salesHistory = generateRangeDates(start, end);
+  let attendeesAmounts = [];
   for (let sales of salesHistory) {
     let attendeesFromDay = attendees.filter(attendee => {
       if (moment(sales.date).isSame(moment(attendee.created), 'day')) {
         return attendee;
       }
     });
+    sales.percentage = 0;
     sales.attendees = attendeesFromDay.length;
-    sales.attendeesList = attendeesFromDay.map(attendee => {
-      return {
-        resource_uri: attendee.resource_uri,
-        id: attendee.id,
-        changed: attendee.changed,
-        created: attendee.created,
-        quantity: attendee.quantity,
-        status: attendee.status,
-        checked_in: attendee.checked_in,
-        cancelled: attendee.cancelled,
-        guestlist_id: attendee.guestlist_id,
-        invited_by: attendee.invited_by,
-        order_id: attendee.order_id
-      };
+    attendeesAmounts.push(sales.attendees)
+  }
+
+  attendeesAmounts = attendeesAmounts.sort((a, b) => {
+    if (a === b) return 0;
+    if (a > b) return -1;
+    else return 1;
+  });
+
+  const maxValue = attendeesAmounts[0];
+
+  let attendeesAmountsPercentage = attendeesAmounts.map(value => {
+    const percentage = maxValue > 0 ? ((value * 100) / maxValue).toFixed(2) : 0;
+    return {
+      percentage,
+      value
+    };
+  });
+
+  for (let sales of salesHistory) {
+    attendeesAmountsPercentage.forEach(data => {
+      if (data.value === sales.attendees) {
+        sales.percentage = data.percentage;
+      }
     });
   }
 

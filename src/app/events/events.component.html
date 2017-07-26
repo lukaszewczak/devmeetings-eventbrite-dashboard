@@ -1,36 +1,47 @@
-<div class="container">
-  <div>
-    <div class="card-panel cyan lighten-3" *ngFor="let event of events | async">
-      <div class="row">
-        <div class="col s7 left-align"><h5><a target="_blank" href="{{event.url}}">{{event.name}}</a></h5></div>
-        <div class="col s5 left-align">
-          Liczba dni do eventu: <h5>{{event.daysLeft}}</h5>
-          Data startu: <h5>{{event.start}}</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s2">
-          Liczba biletów: <h4>{{event.quantity_total}}</h4>
-        </div>
-        <div class="col s3">
-          Liczba sprzedanych biletów: <h4>{{event.quantity_sold}}</h4>
-        </div>
-        <div class="col s3">
-          Liczba dni na sprzedaż: <h4>{{event.salesDays}}</h4>
-        </div>
-        <div class="col s4">
-          Liczba dni do końca sprzedaży: <h4>{{event.salesDaysLeft}}</h4>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12">
-          <h6>Liczba rejestracji per dzień</h6>
-          <span *ngFor="let history of event.salesHistory">
-            <strong>{{history.date}}</strong>:
-            <strong>{{history.attendees}}</strong> |
-          </span>
-        </div>
-      </div>
+<div class="container band">
+
+  <div class="item" *ngFor="let event of events | async">
+    <div class="card">
+      <article>
+        <header>
+          <div class="header-container">
+            <p>{{event.start}}</p>
+            <p title="sold tickets / total tickets">{{event.quantity_sold}} / {{event.quantity_total}}</p>
+          </div>
+          <span>Days to the event: {{event.daysLeft}}</span>
+        </header>
+        <a target="_blank" href="{{event.url}}" title="Go to event page on Eventbrite"><h1>{{event.name}}</h1></a>
+        <section *ngFor="let ticket of event.tickets">
+          <div class="subheader">Tickets: {{ticket.name}}</div>
+          <div class="row">
+            <div class="col s6">
+              <h2>{{ticket.quantity_total}}</h2>
+              <p>Total</p>
+            </div>
+            <div class="col s6">
+              <h2>{{ticket.quantity_sold}}</h2>
+              <p>Sold</p>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="subheader">Sales period</div>
+          <div class="row">
+            <div class="col s6">
+              <h2>{{event.salesDays}}</h2>
+              <p>Total days</p>
+            </div>
+            <div class="col s6">
+              <h2>{{event.salesDaysLeft}}</h2>
+              <p>Days left</p>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="subheader">Registrations per day</div>
+          <app-reg-chart [salesHistory]="event.salesHistory"></app-reg-chart>
+        </section>
+      </article>
     </div>
   </div>
 </div>

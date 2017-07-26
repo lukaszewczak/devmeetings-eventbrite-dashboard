@@ -16,7 +16,14 @@ export interface Attendee {
 export interface SalesHistory {
   date: string,
   attendees: number,
+  percentage: number,
   attendeesList: Attendee[]
+}
+
+export interface Ticket_Class {
+  name: string,
+  quantity_total: number,
+  quantity_sold: number
 }
 
 export interface Event {
@@ -29,6 +36,7 @@ export interface Event {
   daysFromSalesStart: number,
   quantity_total: number,
   quantity_sold: number,
+  tickets: Ticket_Class[],
   sales_start: string,
   sales_end: string,
   salesDays: number,
