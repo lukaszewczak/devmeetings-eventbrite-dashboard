@@ -16,7 +16,7 @@
     "test": "nyc mocha test/**/*.spec.js --reporter spec",
     "test:dev": "set NODE_ENV=development&&nyc mocha test/**/*.spec.js --reporter spec",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "postinstall": "ng build --aot -prod"
+    "postinstall": "ng build --aot"
   },
   "nyc": {
     "include": [
