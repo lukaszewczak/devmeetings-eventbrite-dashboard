@@ -1,0 +1,6 @@
+<div class="reg-chart-summary">
+  <div *ngFor="let history of salesHistory" class="reg-chart-summary-tooltip"
+       title="{{history.date}}. Registration number: {{history.attendees}}">
+    <div class="rep-chart-summary-bar" [style.height.%]="history.percentage"></div>
+  </div>
+</div>

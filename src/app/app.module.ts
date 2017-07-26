@@ -5,11 +5,13 @@ import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
 import {EventsComponent} from './events/events.component';
 import {EventsService} from './events.service';
+import { RegChartComponent } from './reg-chart/reg-chart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EventsComponent
+    EventsComponent,
+    RegChartComponent
   ],
   imports: [
     BrowserModule,
