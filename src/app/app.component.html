@@ -3,8 +3,28 @@
     <div class="container">
       <div class="nav-wrapper">
         <a class="page-title">Devmettings Events Dashboard</a>
+        <ul class="right hide-on-med-and-down">
+          <li>
+            <a routerLink="/live" routerLinkActive="active">Live</a>
+          </li>
+          <li>
+            <a routerLink="/draft" routerLinkActive="active">Draft</a>
+          </li>
+          <li>
+            <a routerLink="/ended" routerLinkActive="active">Ended</a>
+          </li>
+          <li>
+            <a routerLink="/started" routerLinkActive="active">Started</a>
+          </li>
+          <li>
+            <a routerLink="/canceled" routerLinkActive="active">Canceled</a>
+          </li>
+          <li>
+            <a routerLink="/all" routerLinkActive="active">All</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
-  <app-events></app-events>
+  <router-outlet></router-outlet>
 </header>

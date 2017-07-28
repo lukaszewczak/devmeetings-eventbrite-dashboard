@@ -26,6 +26,10 @@ html {
   }
 }
 
+nav ul a.active {
+  background-color: rgba(0,0,0,0.5);
+}
+
 .card {
   background: white;
   text-decoration: none;
@@ -67,6 +71,18 @@ html {
 .card h2 ~ p{
   font-size: 11px;
   margin: 0;
+}
+
+.card header .status p {
+  border-bottom: 1px solid #a6d9b7;
+  border-right: 1px solid #a6d9b7;
+  margin: 0;
+  width: 25%;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-left: 2px;
 }
 
 .card header .header-container {
