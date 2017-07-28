@@ -5,6 +5,16 @@ import {Event} from './event';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/of';
+
+export enum EventStatus {
+  ALL = 'all',
+  ENDED = 'ended',
+  DRAFT = 'draft',
+  LIVE = 'live',
+  STARTED = 'started',
+  CANCELED = 'canceled'
+}
 
 @Injectable()
 export class EventsService {
@@ -12,8 +22,13 @@ export class EventsService {
   constructor(private http: Http) {
   }
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get('/api/events').map((res: Response) => {
+  getEvents(status: string): Observable<Event[]> {
+    const eventStatus: EventStatus = EventStatus[status.toUpperCase()];
+    if (!eventStatus) {
+      return Observable.of<Event[]>([]);
+    }
+
+    return this.http.get(`/api/events/${status}`).map((res: Response) => {
       let body = res.json();
       return body || {};
     });

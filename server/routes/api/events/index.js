@@ -7,10 +7,10 @@ const config = require('../../../config/index');
 
 const request = util.promisify(require('request'));
 
-router.get('/', (req, res) => {
+router.get('/:status', (req, res) => {
 
   const options = {
-    url: 'https://www.eventbriteapi.com/v3/users/me/owned_events?status=live,started,ended',
+    url: `https://www.eventbriteapi.com/v3/users/me/owned_events?order_by=created_desc&status=${req.params.status}`,
     headers: {
       'Authorization': `Bearer  ${config.eventbrite.token}`
     }
@@ -97,7 +97,7 @@ function prepareResponse (response) {
     }
     if (!sales_end ||
       (sales_end.isAfter(moment(ticket_class.sales_end)) &&
-      moment(ticket_class.sales_end).isBefore(moment(response.start.local)))) {
+        moment(ticket_class.sales_end).isBefore(moment(response.start.local)))) {
       sales_end = moment(ticket_class.sales_end);
     }
   }
@@ -110,6 +110,7 @@ function prepareResponse (response) {
     name: response.name.text,
     id: response.id,
     url: response.url,
+    status: response.status,
     start: moment(response.start.local).format('LLL'),
     end: moment(response.end.local).format('YYYY-MM-DD HH:mm'),
     daysLeft: moment(response.start.local).diff(moment(), 'days'),
