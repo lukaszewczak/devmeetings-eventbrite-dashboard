@@ -2,6 +2,6 @@
 
 const router = require('express').Router();
 
-router.use('/events', require('./events/index'));
+router.get('/events/:status', require('./events').get);
 
 module.exports = router;
