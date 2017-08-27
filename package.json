@@ -20,7 +20,7 @@
   },
   "nyc": {
     "include": [
-      "server/routes/**/*.js"
+      "server/**/*.js"
     ],
     "exclude": [
       "node_modules/"
